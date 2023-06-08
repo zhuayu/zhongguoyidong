@@ -174,6 +174,7 @@ let filterExperts = []
 const handleSubmit = () => {
   modelRef.page = 1;
   modelRef.page_size = 10;
+  data.pagination.current = 1;
   filterExperts = allExperts.filter(item => {
     if (modelRef.id) {
       return item.id == modelRef.id && item.name.includes(modelRef.name) && item.company.includes(modelRef.company) && item.industry.includes(modelRef.industry) && item.station.includes(modelRef.station) && item.major.includes(modelRef.major)
@@ -186,11 +187,11 @@ const handleSubmit = () => {
 
 const handleReset = () => {
   modelRef.id = null;
-  modelRef.name = null;
-  modelRef.company = null;
-  modelRef.industry = null;
-  modelRef.station = null;
-  modelRef.major = null;
+  modelRef.name = '';
+  modelRef.company = '';
+  modelRef.industry = '';
+  modelRef.station = '';
+  modelRef.major = '';
 };
 
 const handleTableChange = (params) => {
@@ -198,7 +199,7 @@ const handleTableChange = (params) => {
   modelRef.page_size = params.pageSize;
   data.pagination.current = params.current;
   data.pagination.pageSize = Number(params.pageSize);
-  showTable(filterExperts);
+  showTable(filterExperts.length ? filterExperts : allExperts);
 };
 
 //#region 导出表格
@@ -233,8 +234,6 @@ const transData = (columns, tableList) => {
   return [obj.titles, ...tableBody];
 };
 //#endregion
-
-
 
 </script>
 

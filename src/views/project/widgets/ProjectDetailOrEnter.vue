@@ -21,68 +21,34 @@
         </div>
       </div>
       <div class="project-body">
-        <a-form
-          ref="formRef"
-          name="basic"
-          :model="data.formState"
-          :rules="rules"
-          :label-col="{ span: 4 }"
-          :wrapper-col="{ span: 17 }"
-          :hideRequiredMark="hideRequiredMark"
-          @finish="handleSubmit"
-        >
+        <a-form ref="formRef" name="basic" :model="data.formState" :rules="rules" :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 17 }" :hideRequiredMark="hideRequiredMark" @finish="handleSubmit">
           <a-form-item label="项目名称" name="name">
-            <a-input
-              v-model:value="data.formState.name"
-              :disabled="disabled"
-              :title="data.formState.name"
-            />
+            <a-input v-model:value="data.formState.name" :disabled="disabled" :title="data.formState.name" />
           </a-form-item>
           <a-form-item label="参与人数" name="expert_number">
-            <a-input
-              v-model:value="data.formState.expert_number"
-              :disabled="disabled"
-            />
+            <a-input v-model:value="data.formState.expert_number" :disabled="disabled" />
           </a-form-item>
           <a-form-item label="启动日期" name="begin_date">
-            <a-input
-              v-model:value="data.formState.begin_date"
-              :disabled="disabled"
-            />
+            <a-input v-model:value="data.formState.begin_date" :disabled="disabled" />
           </a-form-item>
           <a-form-item label="项目状态" name="status_desc">
             <a-input v-if="!id" value="进行中" disabled />
-            <a-input
-              v-else
-              v-model:value="data.formState.status_desc"
-              :disabled="disabled"
-            />
+            <a-input v-else v-model:value="data.formState.status_desc" :disabled="disabled" />
           </a-form-item>
           <a-form-item label="行业" name="industry">
-            <a-input
-              v-model:value="data.formState.industry"
-              :disabled="disabled"
-            />
+            <a-input v-model:value="data.formState.industry" :disabled="disabled" />
           </a-form-item>
           <a-form-item label="产品领域" name="domain">
-            <a-input
-              v-model:value="data.formState.domain"
-              :disabled="disabled"
-            />
+            <a-input v-model:value="data.formState.domain" :disabled="disabled" />
           </a-form-item>
           <a-form-item label="项目周期" name="period">
-            <a-input
-              v-if="id"
-              :value="data.formState.period + '周'"
-              :disabled="disabled"
-            />
+            <a-input v-if="id" :value="data.formState.period + '周'" :disabled="disabled" />
             <a-input v-else v-model:value="data.formState.period" />
           </a-form-item>
           <a-form-item v-if="!id" :wrapper-col="{ span: 14, offset: 4 }">
             <a-button type="primary" html-type="submit">提交</a-button>
-            <a-button style="margin-left: 10px" @click="handleResetForm"
-              >重置</a-button
-            >
+            <a-button style="margin-left: 10px" @click="handleResetForm">重置</a-button>
           </a-form-item>
         </a-form>
       </div>
@@ -94,8 +60,8 @@
 import { LeftOutlined } from "@ant-design/icons-vue";
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import Projects from "@/global/service/projects.js";
 import { message } from "ant-design-vue";
+import fakeData from '@/datas/projects';
 
 const formRef = ref();
 const hideRequiredMark = ref(false);
@@ -126,8 +92,8 @@ onMounted(() => {
   id.value = router.currentRoute.value.params.id;
   if (id.value) {
     title.value = "项目详情";
-    Projects.getProjectDetail(id.value).then((res) => {
-      data.formState = res.data;
+    Promise.resolve(fakeData).then((res) => {
+      data.formState = res.data.list.filter(item => item.id == id.value)[0]
       hideRequiredMark.value = true;
       disabled.value = true;
     });
@@ -143,11 +109,9 @@ const handleResetForm = () => {
   formRef.value.resetFields();
 };
 const handleSubmit = (values) => {
-  Projects.postProject(values).then((res) => {
-    message.success("项目录入成功！");
-    formRef.value.resetFields();
-    router.push({ name: "projectList" });
-  });
+  message.success("项目录入成功！");
+  formRef.value.resetFields();
+  router.push({ name: "projectList" });
 };
 </script>
 
@@ -156,11 +120,13 @@ const handleSubmit = (values) => {
   flex: 1;
   display: flex;
   align-items: center;
+
   .project-container {
     width: 1200px;
     min-width: 1000px;
     background: #fff;
     margin: 0 auto;
+
     .project-header {
       height: 60px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -168,33 +134,40 @@ const handleSubmit = (values) => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       .header-left {
         font-size: 16px;
         font-family: PingFangSC-Medium, PingFang SC;
         font-weight: 500;
+
         .ant-menu {
           height: 100%;
           padding-top: 7.5px;
           border: none;
         }
       }
+
       .header-right {
         display: flex;
         align-items: center;
+
         .header-link {
           font-size: 8px;
           color: #000;
           display: flex;
           align-items: center;
+
           .header-link-text {
             font-size: 14px;
             font-family: PingFangSC-Regular, PingFang SC;
             margin-left: 4px;
           }
+
           &:hover {
             color: #1890ff;
           }
         }
+
         .header-text {
           font-size: 14px;
           color: rgba(0, 0, 0, 0.45);
@@ -203,10 +176,12 @@ const handleSubmit = (values) => {
       }
     }
   }
+
   .project-body {
     margin-top: 24px;
   }
 }
+
 .ant-input[disabled] {
   color: #000000;
   background-color: #ffffff;
@@ -218,6 +193,7 @@ const handleSubmit = (values) => {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
 .ant-input[disabled]:hover {
   border: none;
 }

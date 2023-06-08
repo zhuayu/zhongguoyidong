@@ -21,15 +21,8 @@
     </div>
     <div class="enter-bottom">
       <div class="bottom-container">
-        <a-form
-          ref="formRef"
-          name="basic"
-          :model="data.formState"
-          :rules="rules"
-          :label-col="{ span: 7 }"
-          :wrapper-col="{ span: 17 }"
-          @finish="handleSubmit"
-        >
+        <a-form ref="formRef" name="basic" :model="data.formState" :rules="rules" :label-col="{ span: 7 }"
+          :wrapper-col="{ span: 17 }" @finish="handleSubmit">
           <div calss="base-info">
             <h3 class="base-title">基本信息</h3>
             <div class="base-content">
@@ -60,9 +53,7 @@
                 <a-col :span="12">
                   <div class="education-school info-name">
                     <a-form-item label="毕业院校" name="graduated_school">
-                      <a-input
-                        v-model:value="data.formState.graduated_school"
-                      />
+                      <a-input v-model:value="data.formState.graduated_school" />
                     </a-form-item>
                   </div>
                 </a-col>
@@ -117,14 +108,9 @@
               </div>
             </div>
           </div>
-          <a-form-item
-            class="btn-container"
-            :wrapper-col="{ span: 10, offset: 20 }"
-          >
+          <a-form-item class="btn-container" :wrapper-col="{ span: 10, offset: 20 }">
             <a-button type="primary" html-type="submit">提交</a-button>
-            <a-button style="margin-left: 10px" @click="handleResetForm"
-              >重置</a-button
-            >
+            <a-button style="margin-left: 10px" @click="handleResetForm">重置</a-button>
           </a-form-item>
         </a-form>
       </div>
@@ -135,7 +121,6 @@
 <script setup>
 import { LeftOutlined } from "@ant-design/icons-vue";
 import { ref, reactive } from "vue";
-import Experts from "@/global/service/experts.js";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
 
@@ -180,11 +165,9 @@ const handleResetForm = () => {
 };
 const router = useRouter();
 const handleSubmit = (values) => {
-  Experts.postExpert(values).then((res) => {
-    message.success("专家录入成功！");
-    formRef.value.resetFields();
-    router.push({ name: "ExpertList" });
-  });
+  message.success("专家录入成功！");
+  formRef.value.resetFields();
+  router.push({ name: "ExpertList" });
 };
 </script>
 
@@ -192,6 +175,7 @@ const handleSubmit = (values) => {
 .enter-container {
   background: #fff;
   margin-top: 24px;
+
   .enter-top {
     height: 60px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -199,33 +183,40 @@ const handleSubmit = (values) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .enter-top-left {
       font-size: 16px;
       font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 500;
+
       .ant-menu {
         height: 100%;
         padding-top: 7.5px;
         border: none;
       }
     }
+
     .enter-top-right {
       display: flex;
       align-items: center;
+
       .enter-link {
         font-size: 8px;
         color: #000;
         display: flex;
         align-items: center;
+
         .enter-link-text {
           font-size: 14px;
           font-family: PingFangSC-Regular, PingFang SC;
           margin-left: 4px;
         }
+
         &:hover {
           color: #1890ff;
         }
       }
+
       .enter-text {
         font-size: 14px;
         color: rgba(0, 0, 0, 0.45);
@@ -234,17 +225,21 @@ const handleSubmit = (values) => {
     }
   }
 }
+
 .enter-bottom {
+
   .base-content,
   .education-content,
   .career-content {
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     margin-bottom: 24px;
   }
+
   .bottom-container {
     width: 1000px;
     padding: 24px;
     margin: 0 auto;
+
     .base-title {
       height: 20px;
       font-size: 14px;
@@ -255,10 +250,12 @@ const handleSubmit = (values) => {
       margin-bottom: 12px;
     }
   }
+
   .btn-container {
     margin-bottom: 0;
   }
 }
+
 .ant-input[disabled] {
   color: #000000;
   background-color: #ffffff;
@@ -270,6 +267,7 @@ const handleSubmit = (values) => {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
 .ant-input[disabled]:hover {
   border: none;
 }
