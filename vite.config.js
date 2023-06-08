@@ -3,9 +3,6 @@ import vue from "@vitejs/plugin-vue";
 import Components from "unplugin-vue-components/vite";
 import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
 
-import dotenv from "dotenv";
-dotenv.config({ path: "./.env.local" });
-
 import { fileURLToPath, URL } from "node:url";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import path from "path";

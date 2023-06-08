@@ -1,10 +1,5 @@
 # zhongyishuzhi
 
-## Touch .env.local
-```
-VITE_APP_API=https://hongru-api.jiker.vip
-```
-
 ## Project setup
 ```
 yarn install

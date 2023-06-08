@@ -10,10 +10,8 @@
   },
   "dependencies": {
     "ant-design-vue": "^3.2.12",
-    "axios": "^0.27.2",
     "dayjs": "^1.11.5",
     "default-passive-events": "^2.0.0",
-    "dotenv": "^16.0.2",
     "echarts": "^5.4.0",
     "fs": "^0.0.1-security",
     "nprogress": "^0.2.0",
