@@ -52,20 +52,11 @@
           </router-link>
         </div>
         <div class="list-container">
-          <a-table
-            :ref="exportTableRef"
-            :columns="columns"
-            :row-key="(record) => record.id"
-            :data-source="data.projects"
-            :pagination="data.pagination"
-            :loading="loading"
-            @change="handleTableChange"
-          >
+          <a-table :ref="exportTableRef" :columns="columns" :row-key="(record) => record.id" :data-source="data.projects"
+            :pagination="data.pagination" :loading="loading" @change="handleTableChange">
             <template #bodyCell="{ column, record }">
               <template v-if="column.dataIndex === 'operate'">
-                <router-link :to="{ path: `/project/detail/${record.id}` }"
-                  >详情</router-link
-                >
+                <router-link :to="{ path: `/project/detail/${record.id}` }">详情</router-link>
               </template>
               <template v-if="column.dataIndex === 'period'">
                 <span>{{ record.period }}周</span>
@@ -83,7 +74,7 @@ import LayoutHeaderLeft from "@/components/LayoutHeaderLeft.vue";
 import LayoutNav from "@/components/LayoutNav.vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
 import { reactive, ref, onMounted } from "vue";
-import Projects from "@/global/service/projects.js";
+import fakeData from '@/datas/projects';
 
 const data = reactive({
   countData: {},
@@ -143,37 +134,49 @@ const columns = [
 const page = ref(1);
 const page_size = ref(10);
 onMounted(() => {
-  getProjects();
+  getTableData();
 });
-const getProjects = () => {
-  loading.value = true;
-  Projects.getProjectList({
-    page: page.value,
-    page_size: page_size.value,
-  }).then((res) => {
+
+//#region 查
+let allProjects = [];
+const getTableData = () => {
+  loading.value = true
+  Promise.resolve(fakeData).then((res) => {
+    allProjects = res.data.list
     data.countData = res.data.extra_info;
-    data.projects = res.data.list;
-    const total = res.data.pagination.total;
-    const current = res.data.pagination.current_page;
-    const pageSize = Number(res.data.pagination.per_page);
-    const showQuickJumper = true;
-    const showSizeChanger = true;
-    data.pagination = {
-      total,
-      current,
-      pageSize,
-      showQuickJumper,
-      showSizeChanger,
-    };
-    loading.value = false;
-  });
-};
+    showTable(allProjects)
+  })
+    .catch((e) => {
+      console.log(e)
+      data.projects = []
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+//#endregion
+
+//#region 展示区内容
+const showTable = (table) => {
+  data.pagination.total = table.length
+  data.pagination.showQuickJumper = true;
+  data.pagination.showSizeChanger = true;
+  if (page.value == 1) {
+    data.projects = table.slice(0, page_size.value)
+  } else {
+    let tableBegin = (page.value - 1) * (page_size.value)
+    let tableEnd = tableBegin + page_size.value
+    data.projects = table.slice(tableBegin, tableEnd)
+  }
+}
+//#endregion
+
 const handleTableChange = (params) => {
   page.value = params.current;
   page_size.value = params.pageSize;
   data.pagination.current = params.current;
   data.pagination.pageSize = Number(params.pageSize);
-  getProjects();
+  showTable(allProjects);
 };
 </script>
 
@@ -185,11 +188,14 @@ const handleTableChange = (params) => {
   border-bottom: 1px solid #ebebeb;
   display: flex;
   align-items: center;
+
   .header-right {
     margin-left: 56px;
+
     .ant-menu-horizontal {
       border: none;
     }
+
     :deep(.ant-menu-item),
     :deep(.ant-menu-submenu) {
       height: 71px;
@@ -197,23 +203,29 @@ const handleTableChange = (params) => {
     }
   }
 }
+
 .project-container {
   min-width: 1200px;
   padding: 24px;
+
   .title {
     font-size: 16px;
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 500;
   }
+
   .count-sectiion {
     background: #fff;
     padding: 24px;
     margin: 0 auto;
+
     .count-title {
       margin-bottom: 24px;
     }
+
     .count-list {
       display: flex;
+
       .count-item {
         width: 40%;
         height: 170px;
@@ -264,9 +276,11 @@ const handleTableChange = (params) => {
       }
     }
   }
+
   .list-sectiion {
     background: #fff;
     margin-top: 24px;
+
     .list-top {
       height: 58px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -275,11 +289,14 @@ const handleTableChange = (params) => {
       justify-content: space-between;
       align-items: center;
     }
+
     .list-container {
       padding: 24px;
+
       :deep(.ant-table-cell) {
         white-space: nowrap;
       }
+
       :deep(.ant-table-pagination.ant-pagination) {
         margin: 24px 0px 0px 0px;
       }

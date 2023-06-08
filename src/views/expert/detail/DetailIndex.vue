@@ -42,9 +42,7 @@
                     }}</span>
                   </p>
                   <p class="base-phone info-name">
-                    联系方式：<span class="base-text info-text"
-                      >电话-{{ data.detailData.telephone }}</span
-                    >
+                    联系方式：<span class="base-text info-text">电话-{{ data.detailData.telephone }}</span>
                   </p>
                 </div>
               </div>
@@ -57,9 +55,7 @@
                   }}</span>
                 </p>
                 <p class="base-email info-name">
-                  <span class="base-text info-text"
-                    >邮箱-{{ data.detailData.email }}</span
-                  >
+                  <span class="base-text info-text">邮箱-{{ data.detailData.email }}</span>
                 </p>
               </div>
             </a-col>
@@ -94,11 +90,8 @@
             <a-row :gutter="70">
               <a-col :span="7">
                 <div class="career-industry info-name">
-                  所在行业：<span
-                    class="career-text info-text"
-                    :title="data.detailData.industry"
-                    >{{ data.detailData.industry }}</span
-                  >
+                  所在行业：<span class="career-text info-text" :title="data.detailData.industry">{{ data.detailData.industry
+                  }}</span>
                 </div>
               </a-col>
               <a-col :span="7">
@@ -121,11 +114,8 @@
             <a-row :gutter="70">
               <a-col :span="7">
                 <div class="career-major info-name">
-                  产品领域：<span
-                    class="career-text info-text"
-                    :title="data.detailData.major"
-                    >{{ data.detailData.major }}</span
-                  >
+                  产品领域：<span class="career-text info-text" :title="data.detailData.major">{{ data.detailData.major
+                  }}</span>
                 </div>
               </a-col>
               <a-col :span="7">
@@ -137,9 +127,7 @@
               </a-col>
               <a-col :span="7">
                 <div class="career-stacks_count info-name">
-                  测评数量：<span class="career-text info-text"
-                    >{{ data.detailData.stacks_count }}个</span
-                  >
+                  测评数量：<span class="career-text info-text">{{ data.detailData.stacks_count }}个</span>
                 </div>
               </a-col>
             </a-row>
@@ -148,20 +136,9 @@
       </div>
     </div>
     <div class="apply-section">
-      <a-button
-        class="apply-btn"
-        size="large"
-        type="primary"
-        @click="handleClick"
-        >申请专家调用</a-button
-      >
+      <a-button class="apply-btn" size="large" type="primary" @click="handleClick">申请专家调用</a-button>
     </div>
-    <a-modal
-      v-model:visible="modalVisible"
-      title="系统建设中"
-      centered
-      :footer="null"
-    >
+    <a-modal v-model:visible="modalVisible" title="系统建设中" centered :footer="null">
       <p>如需调用专家请联系中移咨询协同拓展部</p>
       <p>联系电话：13611020779</p>
     </a-modal>
@@ -171,8 +148,8 @@
 <script setup>
 import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import Experts from "@/global/service/experts.js";
 import { pinyin } from "pinyin-pro";
+import fakeData from '@/datas/experts';
 
 const data = reactive({
   detailData: {},
@@ -182,8 +159,8 @@ const modalVisible = ref(false);
 const router = useRouter();
 onMounted(() => {
   const id = router.currentRoute.value.params.id;
-  Experts.getExpertDetail(id).then((res) => {
-    data.detailData = res.data;
+  Promise.resolve(fakeData).then((res) => {
+    data.detailData = res.data.list.filter(item => item.id == id)[0];
     const firstLetterArr = pinyin(data.detailData.name, { pattern: "first", toneType: "none", type: "array" });
     firstLetter.value = firstLetterArr[0].toLocaleUpperCase();
   });
@@ -283,10 +260,12 @@ const handleClick = () => {
     .base-content {
       padding-bottom: 24px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
       .base-left {
         min-width: 300px;
         display: flex;
         align-items: center;
+
         .firstLetter-container {
           width: 56px;
           height: 56px;
@@ -295,6 +274,7 @@ const handleClick = () => {
           border-radius: 50%;
           background: #0484D4;
           margin-right: 16px;
+
           .first-letter {
             font-size: 32px;
             font-family: PingFangSC-Medium, PingFang SC;
@@ -302,18 +282,23 @@ const handleClick = () => {
             color: #FFFFFF;
           }
         }
+
         .base-name {
           margin-bottom: 10px;
         }
+
         .base-phone {
           margin-bottom: 0px;
         }
       }
+
       .base-right {
         min-width: 350px;
+
         .base-text-blue {
           color: #0484d4;
         }
+
         .base-num {
           margin-bottom: 10px;
         }

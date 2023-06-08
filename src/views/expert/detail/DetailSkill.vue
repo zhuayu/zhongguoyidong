@@ -3,7 +3,7 @@
     <div class="detail-skill-top">
       <div class="skill-expert-container">
         <div class="expert-left">
-            <span class="first-letter">{{ firstLetter }}</span>
+          <span class="first-letter">{{ firstLetter }}</span>
         </div>
         <div class="expert-right">
           <p class="expert-name">{{ data.detailData.name }}</p>
@@ -26,8 +26,8 @@
 <script setup>
 import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import Experts from "@/global/service/experts.js";
 import { pinyin } from "pinyin-pro";
+import fakeData from '@/datas/experts';
 
 const data = reactive({
   detailData: {},
@@ -37,8 +37,8 @@ const id = ref(null);
 const router = useRouter();
 onMounted(() => {
   id.value = router.currentRoute.value.params.id;
-  Experts.getExpertDetail(id.value).then((res) => {
-    data.detailData = res.data;
+  Promise.resolve(fakeData).then((res) => {
+    data.detailData = res.data.list.filter(item => item.id == id.value)[0];
     const firstLetterArr = pinyin(data.detailData.name, { pattern: "first", toneType: "none", type: "array" });
     firstLetter.value = firstLetterArr[0].toLocaleUpperCase();
   });
@@ -48,14 +48,17 @@ onMounted(() => {
 <style lang="less" scoped>
 .detail-container {
   padding: 24px;
+
   .detail-skill-top {
     width: 820px;
     height: 150px;
     background: url(@/assets/images/tbg.png) no-repeat center / cover;
     padding: 40px;
+
     .skill-expert-container {
       display: flex;
       align-items: center;
+
       .expert-left {
         width: 70px;
         height: 70px;
@@ -64,6 +67,7 @@ onMounted(() => {
         border-radius: 50%;
         background: #0484D4;
         margin-right: 16px;
+
         .first-letter {
           font-size: 40px;
           font-family: PingFangSC-Medium, PingFang SC;
@@ -71,6 +75,7 @@ onMounted(() => {
           color: #FFFFFF;
         }
       }
+
       .expert-name {
         height: 28px;
         font-size: 20px;
@@ -78,8 +83,9 @@ onMounted(() => {
         font-weight: 500;
         line-height: 28px;
         margin-bottom: 6px;
-        
+
       }
+
       .expert-skill {
         height: 20px;
         font-size: 16px;
@@ -90,9 +96,13 @@ onMounted(() => {
         margin-bottom: 0px;
       }
     }
-  };
+  }
+
+  ;
+
   .detail-skill-bottom {
     width: 820px;
+
     img {
       width: 100%;
     }

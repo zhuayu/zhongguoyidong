@@ -17,99 +17,36 @@
       <div class="search-container">
         <a-form layout="inline">
           <a-form-item>
-            <a-input
-              class="expert-input"
-              v-model:value="modelRef.id"
-              placeholder="工号"
-            />
+            <a-input class="expert-input" v-model:value="modelRef.id" placeholder="工号" />
           </a-form-item>
           <a-form-item>
-            <a-input
-              class="expert-input"
-              v-model:value="modelRef.name"
-              placeholder="姓名"
-            />
+            <a-input class="expert-input" v-model:value="modelRef.name" placeholder="姓名" />
           </a-form-item>
           <a-form-item>
-            <a-input
-              class="expert-select"
-              v-model:value="modelRef.company"
-              placeholder="请输入公司"
-            />
-            <!-- <a-select
-              v-model:value="modelRef.company"
-              placeholder="请选择公司"
-              allowClear
-            >
-              <a-select-option value="shanghai">Zone one</a-select-option>
-              <a-select-option value="beijing">Zone two</a-select-option>
-            </a-select> -->
+            <a-input class="expert-select" v-model:value="modelRef.company" placeholder="请输入公司" />
           </a-form-item>
           <a-form-item>
-            <a-input
-              class="expert-select"
-              v-model:value="modelRef.industry"
-              placeholder="请输入行业"
-            />
-            <!-- <a-select
-              v-model:value="modelRef.industry"
-              placeholder="请选择行业"
-              allowClear
-            >
-            </a-select> -->
+            <a-input class="expert-select" v-model:value="modelRef.industry" placeholder="请输入行业" />
           </a-form-item>
           <a-form-item>
-            <a-input
-              class="expert-select"
-              v-model:value="modelRef.station"
-              placeholder="请输入岗位"
-            />
-            <!-- <a-select
-              v-model:value="modelRef.station"
-              placeholder="请选择岗位"
-              allowClear
-            >
-            </a-select> -->
+            <a-input class="expert-select" v-model:value="modelRef.station" placeholder="请输入岗位" />
           </a-form-item>
           <a-form-item>
-            <a-input
-              class="expert-select"
-              v-model:value="modelRef.major"
-              placeholder="请输入产品领域"
-            />
-            <!-- <a-select
-              v-model:value="modelRef.major"
-              placeholder="请选择产品领域"
-              allowClear
-            >
-            </a-select> -->
+            <a-input class="expert-select" v-model:value="modelRef.major" placeholder="请输入产品领域" />
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click.prevent="handleSubmit"
-              >查询</a-button
-            >
-            <a-button style="margin-left: 8px" @click="handleReset"
-              >重置</a-button
-            >
+            <a-button type="primary" @click.prevent="handleSubmit">查询</a-button>
+            <a-button style="margin-left: 8px" @click="handleReset">重置</a-button>
           </a-form-item>
         </a-form>
         <a-button @click="handleExport">导出</a-button>
       </div>
       <div class="table-container">
-        <a-table
-          :ref="exportTableRef"
-          :columns="columns"
-          :row-key="(record) => record.id"
-          :data-source="data.experts"
-          :pagination="data.pagination"
-          :loading="loading"
-          @change="handleTableChange"
-        >
+        <a-table :ref="exportTableRef" :columns="columns" :row-key="(record) => record.id" :data-source="data.experts"
+          :pagination="data.pagination" :loading="loading" @change="handleTableChange">
           <template #bodyCell="{ column, record }">
             <template v-if="column.dataIndex === 'operate'">
-              <router-link :to="{ path: `/expert/detail/index/${record.id}` }"
-                >详情</router-link
-              >
+              <router-link :to="{ path: `/expert/detail/index/${record.id}` }">详情</router-link>
             </template>
           </template>
         </a-table>
@@ -120,24 +57,26 @@
 
 <script setup>
 import { PlusOutlined } from "@ant-design/icons-vue";
-import Experts from "@/global/service/experts.js";
 import { reactive, ref, onMounted } from "vue";
 import * as XLSX from "xlsx/xlsx.mjs";
+import fakeData from '@/datas/experts';
 
 const modelRef = reactive({
   id: null,
-  name: null,
-  company: null,
-  industry: null,
-  station: null,
-  major: null,
-  page: null,
+  name: '',
+  company: '',
+  industry: '',
+  station: '',
+  major: '',
+  page: 1,
   page_size: 10,
 });
+
 const data = reactive({
   experts: [],
   pagination: {},
 });
+
 const exportTableRef = ref(null);
 const loading = ref(false);
 const columns = [
@@ -192,34 +131,59 @@ const columns = [
     width: "5%",
   },
 ];
+
+
 onMounted(() => {
-  getExperts();
+  getTableData();
 });
-const getExperts = () => {
-  loading.value = true;
-  const params = { ...modelRef };
-  Experts.getExpertList(params).then((res) => {
-    data.experts = res.data.list;
-    const total = res.data.pagination.total;
-    const current = res.data.pagination.current_page;
-    const pageSize = Number(res.data.pagination.per_page);
-    const showQuickJumper = true;
-    const showSizeChanger = true;
-    data.pagination = {
-      total,
-      current,
-      pageSize,
-      showQuickJumper,
-      showSizeChanger,
-    };
-    loading.value = false;
-  });
-};
+
+//#region 查
+let allExperts = [];
+const getTableData = () => {
+  loading.value = true
+  Promise.resolve(fakeData).then((res) => {
+    allExperts = res.data.list
+    showTable(allExperts)
+  })
+    .catch((e) => {
+      console.log(e)
+      data.experts = []
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+//#endregion
+
+//#region 展示区内容
+const showTable = (table) => {
+  data.pagination.total = table.length
+  data.pagination.showQuickJumper = true;
+  data.pagination.showSizeChanger = true;
+  if (modelRef.page == 1) {
+    data.experts = table.slice(0, modelRef.page_size)
+  } else {
+    let tableBegin = (modelRef.page - 1) * (modelRef.page_size)
+    let tableEnd = tableBegin + modelRef.page_size
+    data.experts = table.slice(tableBegin, tableEnd)
+  }
+}
+//#endregion
+
+let filterExperts = []
 const handleSubmit = () => {
-  modelRef.page = null;
+  modelRef.page = 1;
   modelRef.page_size = 10;
-  getExperts();
+  filterExperts = allExperts.filter(item => {
+    if (modelRef.id) {
+      return item.id == modelRef.id && item.name.includes(modelRef.name) && item.company.includes(modelRef.company) && item.industry.includes(modelRef.industry) && item.station.includes(modelRef.station) && item.major.includes(modelRef.major)
+    } else {
+      return item.name.includes(modelRef.name) && item.company.includes(modelRef.company) && item.industry.includes(modelRef.industry) && item.station.includes(modelRef.station) && item.major.includes(modelRef.major)
+    }
+  })
+  showTable(filterExperts);
 };
+
 const handleReset = () => {
   modelRef.id = null;
   modelRef.name = null;
@@ -228,11 +192,19 @@ const handleReset = () => {
   modelRef.station = null;
   modelRef.major = null;
 };
+
+const handleTableChange = (params) => {
+  modelRef.page = params.current;
+  modelRef.page_size = params.pageSize;
+  data.pagination.current = params.current;
+  data.pagination.pageSize = Number(params.pageSize);
+  showTable(filterExperts);
+};
+
+//#region 导出表格
 const handleExport = () => {
-  const params = { ...modelRef };
-  params.page_size = data.pagination.total;
-  Experts.getExpertList(params).then((res) => {
-    const experts = res.data.list;
+  Promise.resolve(filterExperts ?? allExperts).then((res) => {
+    const experts = res;
     const columnsList = columns.filter((data) => data.dataIndex != "operate");
     const tableData = transData(columnsList, experts);
     // 将一组 JS 数据数组转换为工作表
@@ -260,19 +232,17 @@ const transData = (columns, tableList) => {
   });
   return [obj.titles, ...tableBody];
 };
-const handleTableChange = (params) => {
-  modelRef.page = params.current;
-  modelRef.page_size = params.pageSize;
-  data.pagination.current = params.current;
-  data.pagination.pageSize = Number(params.pageSize);
-  getExperts();
-};
+//#endregion
+
+
+
 </script>
 
 <style lang="less" scoped>
 .expert-sectiion {
   margin-top: 24px;
   background: #fff;
+
   .expert-top {
     height: 58px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -280,42 +250,49 @@ const handleTableChange = (params) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .expert-title {
       font-size: 16px;
       font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 500;
     }
   }
+
   .expert-bottom {
     padding: 24px;
+
     :deep(.ant-form-item) {
       margin-right: 8px;
+
       .expert-input {
         width: 122px;
       }
+
       .expert-select {
         width: 160px;
       }
     }
   }
+
   .search-container {
     display: flex;
     justify-content: space-between;
   }
+
   .table-container {
     margin-top: 16px;
+
     :deep(.ant-table-cell) {
       white-space: nowrap;
     }
+
     :deep(.ant-table-pagination.ant-pagination) {
       margin: 24px 0px 0px 0px;
     }
   }
 }
-:global(.ant-table-content
-    .ant-table-thead
-    > tr
-    > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before) {
+
+:global(.ant-table-content .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before) {
   width: 0;
 }
 </style>
