@@ -20,6 +20,7 @@
       </div>
     </div>
   </section>
+
   <section class="expert-level">
     <h2 class="expert-level-title title">技能水平</h2>
     <div class="level-list">
@@ -33,6 +34,7 @@
       </div>
     </div>
   </section>
+
   <section class="skill-distribution charts-container">
     <h2 class="skill-distribution-title title">技能分布</h2>
     <div class="distribution-item charts-item">
@@ -40,6 +42,7 @@
       <div ref="distribution" style="width: 100%; height: 500px"></div>
     </div>
   </section>
+
   <section class="evaluation-trends charts-container">
     <h2 class="evaluation-trends-title title">测评动态</h2>
     <div class="distribution-item charts-item">
@@ -47,6 +50,7 @@
       <div ref="trends" style="width: 100%; height: 500px"></div>
     </div>
   </section>
+
   <section class="skill-level-distribution">
     <h2 class="level-distribution-title title">技能级别分布</h2>
     <div class="level-distribution-list">
@@ -82,6 +86,7 @@
       </div>
     </div>
   </section>
+
   <section class="department-skills">
     <h2 class="department-skills-title title">部门技能分析</h2>
     <div class="department-skills-list">
@@ -120,12 +125,16 @@ import { ref, reactive, onUpdated, onMounted } from "vue";
 import * as echarts from "echarts";
 import levelLeftData from "@/global/expertData/skill_contrast.js";
 import getBarOption from "@/global/echartData/getBarOption.js";
+
 import levelRightData from "@/global/expertData/skill_contrast_pie.js";
 import getPieOption from "@/global/echartData/getPieOption.js";
+
 import distributionData from "@/global/expertData/skill_eva_count.js";
 import getScatterOption from "@/global/echartData/getScatterOption.js";
+
 import trendsData from "@/global/expertData/skill_date.js";
 import getLineOption from "@/global/echartData/getLineOption.js";
+
 import levelDistributionData from "@/global/expertData/skill_overview.js";
 import getHorizontalBarOption from "@/global/echartData/getHorizontalBarOption.js";
 import departmentSkillsData from "@/global/expertData/department_overview.js";
